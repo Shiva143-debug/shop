@@ -1,0 +1,49 @@
+import { useState, useEffect } from "react"
+
+
+function ProductTable() {
+
+
+    const [Data, setData] = useState([])
+
+    useEffect(() => {
+        fetch('http://localhost:8083/product')
+            .then(res => res.json())
+            .then(data => setData(data)
+
+            )
+
+    }, [])
+
+    return (
+
+        <div>
+            <h1>Product Table</h1>
+            <table className="table table-bordered" style={{ minWidth: "300px" }}>
+                <thead>
+                    <th>productId</th>
+                    <th>productName</th>
+                    <th>Prize</th>
+                    <th>Quantity</th>
+                    <th>ManufactureDate</th>
+                </thead>
+                <tbody>
+                    {Data.map((d, i) => (
+                        <tr key={i}>
+                            <td>{d.productId}</td>
+                            <td>{d.productName}</td>
+                            <td>{d.price}</td>
+                            <td>{d.quantity}</td>
+                            <td>{d.mfd}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+
+
+    );
+
+}
+
+export default ProductTable

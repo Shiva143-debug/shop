@@ -19,7 +19,7 @@ const db= mysql.createConnection({
 })
 
 const accountSid = 'ACbe1cefd85043cadbae555c64b28027e4';
-const authToken = '007a58a9c4a9ca970b7e4b4b748dc9fe';
+const authToken = 'fc627d2471903bea90356c10bf3302bb';
 const client = twilio(accountSid, authToken);
 
 
@@ -30,6 +30,7 @@ const generateOTP = () => {
 
 app.post('/send-otp', async (req, res) => {
     const { mobileNumber } = req.body;
+    console.log(mobileNumber)
     const otp = generateOTP();
   
     try {
@@ -84,6 +85,16 @@ app.get('/customer',(req,res)=>{
     })
 })
 
+
+app.get('/getpayment',(req,res)=>{
+  const sql="SELECT  * FROM payment";
+  db.query(sql,(err,data)=>{
+      // console.log(err);
+      // console.log(data);
+      if(err) return res.json(err);
+      return res.json(data)
+  })
+})
 
 
 app.get('/product',(req,res)=>{
@@ -167,6 +178,51 @@ app.get('/salesByDate/:date', (req, res) => {
       return res.json(data);
   });
 });
+
+app.get('/cashReport/:cashDate', (req, res) => {
+  const cashDate = req.params.cashDate; 
+  // console.log(cashDate)
+
+  if (!cashDate) {
+      return res.status(400).json({ message: 'Date parameter is required' });
+  }
+
+  const sql = "SELECT * FROM cashTable WHERE `date` = ?";
+
+  db.query(sql, [cashDate], (err, data) => {
+      if (err) {
+          console.error(err);
+          return res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      return res.json(data);
+  });
+});
+
+
+
+app.get('/reportBypayment/:payment', (req, res) => {
+  const payment = req.params.payment; 
+  // console.log(payment)
+
+  if (!payment) {
+      return res.status(400).json({ message: 'paymentType parameter is required' });
+  }
+
+  const sql = "SELECT * FROM payment WHERE `paymentType` = ?";
+
+  db.query(sql, [payment], (err, data) => {
+      if (err) {
+          console.error(err);
+          return res.status(500).json({ message: 'Internal Server Error' });
+      }
+
+      return res.json(data);
+      
+  });
+});
+
+
 app.get('/salesByProductName/:productName', (req, res) => {
   const productName = req.params.productName; 
   // console.log(productName)
@@ -265,7 +321,7 @@ app.post('/createUser', (req, res) => {
 app.post("/addproduct",(req,res)=>{
     const { productName, price,quantity, mfd } = req.body;
     console.log("Received data:", req.body);
-    const sql="INSERT INTO product (`productName`,`price`,`quantity`,`mfd`) VALUES (?,?,?,?)";
+    const sql="INSERT INTO product (`productName`,`price`,`quantity`,`mfd`) VALUES (?,?,?,?) ON DUPLICATE KEY UPDATE quantity = quantity + VALUES(quantity)";
     const values = [productName, price,quantity, mfd];
 
     db.query(sql,values,(err,result)=>{
@@ -293,6 +349,41 @@ app.post("/exportToSales", (req, res) => {
 
   return res.json({ message: 'Data inserted into sales table successfully' });
 });
+
+app.post("/payment",(req,res)=>{
+  const { selectedOption, date,paymentType, grandTotal } = req.body;
+  // console.log("Received data:", req.body);
+  const sql="INSERT INTO payment (`Name`,`Date`,`paymentType`,`Amount`) VALUES (?,?,?,?)";
+  const values = [selectedOption, date,paymentType, grandTotal];
+
+  db.query(sql,values,(err,result)=>{
+      if (err) return res.json(err)
+      return res.json(result)
+  })
+})
+
+app.post('/cashCompleted', (req, res) => {
+  const { selectedOption,date, grandTotal, denominations } = req.body;
+
+  const sql = `
+    INSERT INTO cashTable (name,date, grandTotal, twothousandnotes, fiveHundrednotes, twoHundrednotes, hundrednotes,fiftyNotes,twentynotes,tenNotes,fiverupees,tworupees,onerupees)
+    VALUES (?,?, ?, ?, ?, ?, ?,?,?,?,?,?,?)
+  `;
+
+  const values = [selectedOption,date, grandTotal, denominations['2000notes'], denominations['500notes'], denominations['200notes'], denominations['100notes'],denominations['50notes'],denominations['20notes'],denominations['10notes'],denominations['5rupees'],denominations['2rupees'],denominations['1rupees']];
+  console.log(values)
+  db.query(sql, values, (err, result) => {
+    if (err) {
+      console.error('Error inserting cash completed data:', err);
+      res.status(500).json({ message: 'Error inserting cash completed data' });
+      return;
+    }
+
+    console.log('Cash completed data inserted successfully');
+    res.json({ message: 'Cash completed data inserted successfully' });
+  });
+});
+
 
 app.put('/deductProductQuantity', (req, res) => {
   const { productName, quantity } = req.body;
