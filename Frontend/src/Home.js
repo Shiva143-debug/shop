@@ -13,7 +13,7 @@ function Home() {
     const [selectedOption, setSelectedOption] = useState("select");
     const [address, setAddress] = useState("");
     const [contactNo, setContactNo] = useState("");
-    const [date, setDateChange] = useState("")
+    const [date, setDateChange] =useState(new Date().toISOString().split('T')[0]);
     const [grandTotal, setGrandTotal] = useState(0);
 
     const [data, setdata] = useState([])
@@ -148,11 +148,11 @@ function Home() {
     return (
         <>
             <Header />
-            <div className="d-flex flex-column justify-content-center align-items-center vw-100 vh-300 bg-dark p-5">
+            
 
-                <div className="d-flex flex-column justify-content-center align-items-center bg-secondary rounded p-5 " style={{ width: "90%", height: "100%" }}>
-                    <h2 style={{ color: "white", textAlign: "start" }} className="heading pb-2">Customer Shopping</h2>
-                    <form className="bg-light rounded p-5 mb-5" style={{ width: "100%", height: "60%" }} >
+            <div className="p-5" style={{ background: "linear-gradient(to top, black, gray)", height: "100%" }}>                 
+               <h2 style={{ color: "white", textAlign: "start" }} className="heading pb-2">Customer Shopping</h2>
+                    <form className="rounded p-5 mb-5" style={{ width: "100%", height: "100vh",backgroundColor:"white" }} >
                         <div className="mb-5 row">
                             <div class="col-3">
                                 <label htmlFor="" className="fw-bold" style={{ color: "navy", fontSize: '20px' }}>Name:</label>
@@ -258,7 +258,7 @@ function Home() {
                                 </div>
                             </div>
                         )}
-                        <button type="button" style={{float:"right"}} onClick={proceedToBuy} className="btn btn-success btn-lg">
+                        <button type="button" style={{float:"right"}} onClick={proceedToBuy} className="btn btn-success btn-lg mb-5">
                             Proceed to Buy
                         </button>
                     </form>
@@ -272,7 +272,7 @@ function Home() {
                     <Shopping close={onHide} name={selectedOption} itemsAdded={itemsAddedToCart} selectedRowData={selectedRowData} />
                 </Dialog>
 
-            </div>
+           
         </>
 
     )

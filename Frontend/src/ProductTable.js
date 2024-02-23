@@ -21,20 +21,20 @@ function ProductTable() {
             <h1>Product Table</h1>
             <table className="table table-bordered" style={{ minWidth: "300px" }}>
                 <thead>
-                    <th>productId</th>
+                    {/* <th>productId</th> */}
                     <th>productName</th>
                     <th>Prize</th>
                     <th>Quantity</th>
-                    <th>ManufactureDate</th>
+                    {/* <th>ReceivedDate</th> */}
                 </thead>
                 <tbody>
                     {Data.map((d, i) => (
                         <tr key={i}>
-                            <td>{d.productId}</td>
+                            {/* <td>{d.id}</td> */}
                             <td>{d.productName}</td>
-                            <td>{d.price}</td>
+                            <td>{d.sellingPrice}</td>
                             <td>{d.quantity}</td>
-                            <td>{d.mfd}</td>
+                            {/* <td>{d.Date}</td> */}
                         </tr>
                     ))}
                 </tbody>

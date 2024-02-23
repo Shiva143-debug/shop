@@ -52,7 +52,10 @@ const Phone = () => {
       if (response.ok) {
         setMessage('OTP verified successfully');
         toast.current.show({ severity: 'success', summary: 'Success', detail: 'OTP verified successfully', life: 3000 });
-        navigate("/home")
+        setTimeout(()=>{
+          navigate("/home")
+      },1000)
+        
 
       } else {
         const errorMessage = await response.text();

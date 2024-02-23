@@ -26,12 +26,14 @@ const Reports = () => {
 
 
     const [paymentClicked, setpaymentClicked] = useState(false)
-    const [datebuttonClicked,setDateButtonClicked]= useState(false)
+    const [datebuttonClicked,setDateButtonClicked]= useState(true)
     
     const [namebuttonClicked,setNameButtonClicked]= useState(false)
     const [productbuttonClicked,setProductButtonClicked]= useState(false)
     const [paybuttonClicked,setPayButtonClicked]= useState(false)
     const [cashbuttonClicked,setCashButtonClicked]= useState(false)
+
+    
     console.log(cashReportData)
 
 
@@ -156,6 +158,8 @@ const Reports = () => {
             )
 
     }, [])
+
+
 
 
     useEffect(() => {
@@ -318,13 +322,13 @@ const Reports = () => {
                 }
                 {isLoading && (
 
-                    <div className="d-flex justify-content-center align-items-center" style={{ height: '150px' }}>
+                    <div className="d-flex flex-column justify-content-center align-items-center mt-5 " style={{ height: '150px' }}>
                              <img
-                            className="blinking"
+                            className="blinking mt-5"
                             src="https://assets.ccbp.in/frontend/react-js/nxt-trendz-logo-img.png"
                             alt="website logo"
                         />
-                        {/* <h1 className="blinking" style={{color:"white"}} >Select The Type..... </h1> */}
+                        <h1 className="blinking" style={{color:"white",fontSize:"80px"}} >Select The Report..... </h1>
                         {/* <ProgressSpinner style={{ width: '100px', height: '100px' }} strokeWidth="8" fill="#EEEEEE" animationDuration=".5s" /> */}
                     </div>
                 )}
@@ -411,6 +415,13 @@ const Reports = () => {
 
                                     </tr>
                                 ))}
+                                  <tr>
+                                <td colSpan="3"></td>
+                                
+                                {/* <td>Grand Total: <b>{d.grandTotal.toFixed(2)}</b></td> */}
+                                <td style={{color:"navy",fontWeight:"bold"}}>{paymentTypeData.reduce((acc, d) => acc + d.Amount, 0)}</td>
+                                
+                            </tr>
                             </tbody>
                         </table>
                     </div>

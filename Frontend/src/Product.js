@@ -8,41 +8,65 @@ import { Toast } from 'primereact/toast';
 
 function Product() {
     const [values, setValues] = useState({
-        productName: "",
+        invoice:"",
+        company:"",
+        product: "",
         price: "",
+        sellingPrice:"",
         quantity:"",
-        mfd: ""
+        recievedDate: ""
     })
     const navigate = useNavigate();
     const toast = useRef(null);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!values.productName) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please enter productName' });
+        if (!values.invoice) {
+            toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Please enter Inoice Number' });
+            return;
+        }
+
+        else if (!values.company) {
+            toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Please enter companyName' });
+            return;
+        }
+        else if (!values.product) {
+            toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Please enter productName' });
             return;
         }
 
         else if (!values.price) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please enter price' });
+            toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Please enter price' });
+            return;
+        }
+        else if (!values.sellingPrice) {
+            toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Please enter sellingPrice' });
             return;
         }
 
         else if (!values.quantity) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please enter quantity' });
+            toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Please enter quantity' });
             return;
         }
+        else if (!values.recievedDate) {
+            toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Please enter recievedDate' });
+            return;
+        }
+        else{
         axios.post("http://localhost:8083/addproduct", values)
             .then(res => {
                 console.log(res);
-                toast.current.show({ severity: 'success', summary: 'Success', detail: 'Customer added successfully' });
-                navigate("/home");
+                toast.current.show({ severity: 'success', summary: 'Success', detail: 'product added successfully' });
+                setTimeout(()=>{
+                    navigate("/home")
+                },1000)
             })
             .catch(err => {
                 console.log(err);
-                toast.current.show({ severity: 'error', summary: 'Error', detail: 'Failed to add customer' });
+                toast.current.show({ severity: 'error', summary: 'Error', detail: 'Failed to add product' });
                 
             });
+        }
     };
 
 
@@ -52,22 +76,62 @@ function Product() {
     }
 
 
+    // const handleDataSubmit = (event) => {
+    //     event.preventDefault();
+    //     const total_amount = price * quantity
+
+    //     const data = {
+    //         company, product, price, sellingPrice, quantity, total_amount, recievedDate
+    //     }
+
+    //     axios
+    //         .post("http://localhost:8083/addReceivedData", data)
+    //         .then((res) => {
+    //             console.log(res);
+
+    //         })
+    //         .catch((err) => {
+    //             console.log(err);
+    //             console.log("Failed to submitthe data");
+    //         });
+    // }
+
     return (
         <>
             <Header />
             <Toast ref={toast} />
-            <div className="d-flex flex-column justify-content-center align-items-center vw-100 bg-dark p-5">
-                <div className="d-flex flex-column justify-content-center align-items-center bg-secondary rounded p-5 mx-5" style={{ width: "90%", height: "100%" }}>
+            
+            <div className="p-5" style={{ background: "linear-gradient(to top, black, gray)", height: "100%" }}>
                     <h2 style={{ color: "white", textAlign: "start" }} className="pb-2 mx-5">Add Product</h2>
-                    <form className="bg-light rounded p-5 mx-5 mb-5" style={{ width: "100%", height: "50%" }} onSubmit={handleSubmit}>
+                    <form className="bg-light rounded p-5 mb-5" style={{ width: "100%", height: "50%" }} onSubmit={handleSubmit}>
+
+                    <div className="mb-5 row">
+                            <div class="col-3">
+                                <label htmlFor="" className="fw-bold" style={{ color: "navy", fontSize: '20px' }}>Invoice Number:</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" placeholder="Enter Invoice Number" className="form-control mx-5"
+                                    onChange={e => setValues({ ...values, invoice: e.target.value })} />
+                            </div>
+                        </div>
+
+                    <div className="mb-5 row">
+                            <div class="col-3">
+                                <label htmlFor="" className="fw-bold" style={{ color: "navy", fontSize: '20px' }}>Company Name:</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" placeholder="Enter company Name" className="form-control mx-5"
+                                    onChange={e => setValues({ ...values, company: e.target.value })} />
+                            </div>
+                        </div>
 
                         <div className="mb-5 row">
                             <div class="col-3">
                                 <label htmlFor="" className="fw-bold" style={{ color: "navy", fontSize: '20px' }}>Product Name:</label>
                             </div>
                             <div class="col-7">
-                                <input type="text" placeholder="Enter Name" className="form-control mx-5"
-                                    onChange={e => setValues({ ...values, productName: e.target.value })} />
+                                <input type="text" placeholder="Enter product Name" className="form-control mx-5"
+                                    onChange={e => setValues({ ...values, product: e.target.value })} />
                             </div>
                         </div>
                         <div className="mb-5 row">
@@ -80,6 +144,18 @@ function Product() {
                                     onChange={e => setValues({ ...values, price: e.target.value })} />
                             </div>
                         </div>
+
+                        <div className="mb-5 row">
+                            <div class="col-3">
+                                <label htmlFor="" className="fw-bold" style={{ color: "navy", fontSize: '20px' }}>Selling price:</label>
+
+                            </div>
+                            <div class="col-7">
+                                <input type="number" placeholder="Enter selling price" className="form-control mx-5"
+                                    onChange={e => setValues({ ...values, sellingPrice: e.target.value })} />
+                            </div>
+                        </div>
+
                         <div className="mb-5 row">
                             <div class="col-3">
                                 <label htmlFor="" className="fw-bold" style={{ color: "navy", fontSize: '20px' }}>Quantity:</label>
@@ -90,14 +166,26 @@ function Product() {
                                     onChange={e => setValues({ ...values, quantity: e.target.value })} />
                             </div>
                         </div>
-                        <div className="mb-5 row">
+
+                        {/* <div className="mb-5 row">
                             <div class="col-3">
-                                <label htmlFor="" className="fw-bold" style={{ color: "navy", fontSize: '20px' }}>Manufacture Date:</label>
+                                <label htmlFor="" className="fw-bold" style={{ color: "navy", fontSize: '20px' }}>Total Amount:</label>
 
                             </div>
                             <div class="col-7">
-                                <input type="date" placeholder="Enter date" className="form-control mx-5"
-                                    onChange={e => setValues({ ...values, mfd: e.target.value })} />
+                                <input type="number" className="form-control mx-5"
+                                    onChange={e => setValues({ ...values, quantity: e.target.value })} />
+                            </div>
+                        </div> */}
+
+                        <div className="mb-5 row">
+                            <div class="col-3">
+                                <label htmlFor="" className="fw-bold" style={{ color: "navy", fontSize: '20px' }}>Received Date:</label>
+
+                            </div>
+                            <div class="col-7">
+                                <input type="date" placeholder="Enter Recieved date" className="form-control mx-5"
+                                    onChange={e => setValues({ ...values, recievedDate: e.target.value })} />
                             </div>
                         </div>
                         <div className="mb-5 mt-5 d-flex justify-content-around ">
@@ -105,6 +193,8 @@ function Product() {
                             <button type="submit" class="btn btn-primary btn-lg">ADD</button>
                         </div>
                     </form>
+
+                   
                     <div className="mobile-table bg-light rounded" style={{ width: "100%",overflowX: "auto" }}>
                         <ProductTable />
 
@@ -112,7 +202,6 @@ function Product() {
                 </div>
 
 
-            </div>
 
         </>
     );

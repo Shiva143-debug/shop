@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import QRCode from 'qrcode.react';
+import { v4 as uuidv4 } from 'uuid';
 // import axios from 'axios';
 
 const Checkout = (props) => {
@@ -13,6 +14,7 @@ const Checkout = (props) => {
     const { orderDetails } = location.state || {};
     const [showPayButton, setShowPayButton] = useState(true)
     const [TotalAmount, setGrandTotal] = useState(0);
+    const uniqueId = uuidv4();
     const [inputs, setInputs] = useState([
         { denomination: '2000 Notes', value: '' },
         { denomination: '500 Notes', value: '' },
@@ -29,6 +31,37 @@ const Checkout = (props) => {
 
         // Add more denominations as needed
     ]);
+
+    
+    const calculateAmount = (denomination, value) => {
+        switch (denomination) {
+            case '1 Rupees':
+                return value * 1;
+            case '2 Rupees':
+                return value * 2;
+            case '5 Rupees':
+                return value * 5;
+            case '10 Notes':
+                return value * 10;
+            case '20 Notes':
+                return value * 20;
+            case '50 Notes':
+                return value * 50;
+
+            case '100 Notes':
+                return value * 100;
+            case '200 Notes':
+                return value * 200;
+            case '500 Notes':
+                return value * 500;
+            case '2000 Notes':
+                return value * 2000;
+            default:
+                return 0;
+        }
+
+    };
+
     useEffect(() => {
         let total = 0;
         inputs.forEach(input => {
@@ -51,6 +84,8 @@ const Checkout = (props) => {
     const handlePrint = () => {
         window.print();
 
+        
+
         const exportData = items.map(item => ({
             selectedOption,
             date,
@@ -59,6 +94,8 @@ const Checkout = (props) => {
             quantity: item.quantity,
             total_amount: item.Total_Amount,
         }));
+
+        
 
         fetch('http://localhost:8083/exportToSales', {
             method: 'POST',
@@ -249,35 +286,6 @@ const Checkout = (props) => {
         setInputs(newInputs);
     };
 
-    const calculateAmount = (denomination, value) => {
-        switch (denomination) {
-            case '1 Rupees':
-                return value * 1;
-            case '2 Rupees':
-                return value * 2;
-            case '5 Rupees':
-                return value * 5;
-            case '10 Notes':
-                return value * 10;
-            case '20 Notes':
-                return value * 20;
-            case '50 Notes':
-                return value * 50;
-
-            case '100 Notes':
-                return value * 100;
-            case '200 Notes':
-                return value * 200;
-            case '500 Notes':
-                return value * 500;
-            case '2000 Notes':
-                return value * 2000;
-            default:
-                return 0;
-        }
-
-    };
-
     const remainingBalance = grandTotal - inputs.reduce((acc, curr) => acc + calculateAmount(curr.denomination, curr.value), 0);
 
 
@@ -297,7 +305,7 @@ const Checkout = (props) => {
 
 
                 <div style={{ margin: "10px 10px 0px 10px", border: "1px solid gray", padding: "20px 100px 100px 100px", paddingBottom: "200px" }}>
-                    <h1 style={{ textAlign: "center", color: "red", paddingBottom: "20px" }}>INVOICE</h1>
+                    <h1 style={{ textAlign: "center", color: "red", paddingBottom: "20px" }}>INVOICE {uniqueId}</h1>
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <div style={{ display: "flex" }}>
                             <img src="https://res.cloudinary.com/dxgbxchqm/image/upload/v1704974380/comapnylogo_gh2jvq.jpg" alt="pic" style={{ width: "50px", height: "40px" }} />

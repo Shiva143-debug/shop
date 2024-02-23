@@ -1,20 +1,48 @@
 import { Link, useNavigate } from 'react-router-dom'
-import Cookies from 'js-cookie'
+import React, { useRef } from 'react';
+// import Cookies from 'js-cookie'
 import "./Header.css"
-
+import { Toast } from 'primereact/toast';
+import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
 
 
 const Header = () => {
     const navigate = useNavigate();
-    const onClickLogout = () => {
-    Cookies.remove('jwt_token')
-    navigate('/')
-    }
+    const toast = useRef(null);
+    // const onClickLogout = () => {
+    // Cookies.remove('jwt_token')
+    // navigate('/')
+    // }
 
+    const accept = () => {
+        toast.current.show({ severity: 'success', summary: 'Confirmed', detail: 'You have LoggedOut successflly', life: 3000 });
+        setTimeout(() => {
+            navigate("/");
+        }, 1000)
+
+    };
+
+    const reject = () => {
+        toast.current.show({ severity: 'success', summary: 'Rejected', detail: 'You have not Logout', life: 3000 });
+    };
+
+
+    const onClickLogout = (event) => {
+        confirmPopup({
+            target: event.currentTarget,
+            message: 'Are you sure you want to Logout?',
+            icon: 'pi pi-exclamation-triangle',
+            defaultFocus: 'accept',
+            accept,
+            reject
+        });
+    };
 
 
     return (
         <nav className="nav-header">
+            <Toast ref={toast} />
+            <ConfirmPopup />
             <div className="nav-content">
                 <div className="nav-bar-mobile-logo-container">
                     <Link to="/home">
@@ -48,30 +76,36 @@ const Header = () => {
                     </Link>
                     <ul className="nav-menu">
                         <li className="nav-menu-item">
-                            <Link to="/home" className="nav-link">
-                                Home
+                            <Link to="/home" className="n">
+                                Home  
                             </Link>
                         </li>
 
                         <li className="nav-menu-item">
-                            <Link to="/product" className="nav-link">
+                            <Link to="/product" className="n">
                                 Products
                             </Link>
                         </li>
 
                         <li className="nav-menu-item">
-                            <Link to="/customer" className="nav-link">
+                            <Link to="/customer" className="n">
                                 Customers
                             </Link>
                         </li>
                         <li className="nav-menu-item">
-                            <Link to="/reports" className="nav-link">
+                            <Link to="/reports" className="n">
                                 Reports
                             </Link>
                         </li>
-                        <li className="nav-menu-item">
+                        {/* <li className="nav-menu-item">
                             <Link to="/map" className="nav-link">
                                 Map
+                            </Link>
+                        </li> */}
+
+                        <li className="nav-menu-item">
+                            <Link to="/invoice" className="n">
+                                Invoice
                             </Link>
                         </li>
                         <button

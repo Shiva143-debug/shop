@@ -17,25 +17,30 @@ function Customer() {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!values.name) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please enter name' });
+            toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Please enter name' });
             return;
         }
 
         else if (!values.contactNo) {
-            toast.current.show({ severity: 'error', summary: 'Error', detail: 'Please enter contact number' });
+            toast.current.show({ severity: 'warn', summary: 'Warning', detail: 'Please enter contact number' });
             return;
         }
+        else{
         axios.post("http://localhost:8083/addCustomer", values)
             .then(res => {
                 console.log(res);
                 toast.current.show({ severity: 'success', summary: 'Success', detail: 'Customer added successfully' });
-                navigate("/home");
+                setTimeout(()=>{
+                    navigate("/home")
+                },1000)
+               
             })
             .catch(err => {
                 console.log(err);
                 toast.current.show({ severity: 'error', summary: 'Error', detail: 'Failed to add customer' });
                 
             });
+        }
     };
 
     const onBack=()=>{
@@ -47,8 +52,8 @@ function Customer() {
         <>
             <Header />
             <Toast ref={toast} />
-            <div className="d-flex vw-100 bg-dark p-5">
-                <div className="bg-secondary rounded p-5 mx-5" style={{ width: "90%", height: "100%" }}>
+            
+                <div className="p-5" style={{ background: "linear-gradient(to top, black, gray)", height: "100%" }}>
                     <h2 style={{ color: "white", textAlign: "start" }} className="pb-2 mx-5">Add Customer</h2>
                     <form className="bg-light rounded p-5 mx-5 mb-5" style={{ width: "90%", height: "50%" }} onSubmit={handleSubmit}>
 
@@ -91,7 +96,7 @@ function Customer() {
                 </div>
 
 
-            </div>
+         
 
         </>
     );

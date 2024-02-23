@@ -18,6 +18,9 @@ import Checkout from "./Checkout";
 import Cash from "./Cash";
 import Upi from "./Upi";
 import MapContentPage from "./MapContentPage";
+import Invoice from "./Invoice";
+
+import  { useEffect } from "react";
 
 
 
@@ -26,6 +29,13 @@ import MapContentPage from "./MapContentPage";
 function App() {
   const center = { lat: 59.95, lng: 30.33 }; // Initial center coordinates
   const zoom = 11; // Initial zoom level
+
+
+  useEffect(() => {
+    document.title = "shop";
+  }, []);
+
+
   return (
     
     
@@ -42,6 +52,7 @@ function App() {
         <Route path="/reports" element={<Reports />}></Route>
         <Route path="/cash" element={<Cash />}></Route>
         <Route path="/upi" element={<Upi />}></Route>
+        <Route path="/invoice" element={<Invoice/>}></Route>
         <Route path="/map" element={<MapContentPage center={center} zoom={zoom}  />}></Route>
       </Routes>
     </BrowserRouter>
